@@ -5,9 +5,12 @@ import { useCycles } from '../../../../contexts/CyclesContext'
 import { CountdownContainer, Separator } from './styles'
 
 export function Countdown() {
-  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
-
-  const { activeCycle, markCurrentCycleAsDone } = useCycles()
+  const {
+    activeCycle,
+    markCurrentCycleAs,
+    amountSecondsPassed,
+    setAmountSecondsPassed,
+  } = useCycles()
 
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
@@ -23,16 +26,16 @@ export function Countdown() {
       const interval = setInterval(() => {
         const newAmountSecondsPassed = differenceInSeconds(
           new Date(),
-          activeCycle.startedAt,
+          new Date(activeCycle.startedAt),
         )
         if (newAmountSecondsPassed >= totalSeconds) {
-          markCurrentCycleAsDone({ finishedAt: new Date() })
+          markCurrentCycleAs('finished')
         } else setAmountSecondsPassed(newAmountSecondsPassed)
       }, 1000)
 
       return () => clearInterval(interval)
     }
-  }, [activeCycle, totalSeconds, markCurrentCycleAsDone])
+  }, [activeCycle, totalSeconds, markCurrentCycleAs, setAmountSecondsPassed])
 
   useEffect(() => {
     if (activeCycle) document.title = `${minutes}:${seconds}`
@@ -42,7 +45,7 @@ export function Countdown() {
     if (!activeCycle && amountSecondsPassed) {
       setAmountSecondsPassed(0)
     }
-  }, [activeCycle, amountSecondsPassed])
+  }, [activeCycle, amountSecondsPassed, setAmountSecondsPassed])
 
   return (
     <CountdownContainer>

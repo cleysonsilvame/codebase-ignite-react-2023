@@ -23,7 +23,7 @@ const newCycleFormSchema = z.object({
 export type NewCycleFormData = z.infer<typeof newCycleFormSchema>
 
 export function Home() {
-  const { activeCycle, createNewCycle, markCurrentCycleAsDone } = useCycles()
+  const { activeCycle, createNewCycle, markCurrentCycleAs } = useCycles()
 
   const newCycleForm = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormSchema),
@@ -41,7 +41,7 @@ export function Home() {
   }
 
   function handleInterruptCycle() {
-    markCurrentCycleAsDone({ interruptedAt: new Date() })
+    markCurrentCycleAs('interrupted')
   }
 
   return (
