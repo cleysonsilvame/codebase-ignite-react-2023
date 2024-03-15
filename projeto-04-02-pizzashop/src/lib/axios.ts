@@ -10,7 +10,10 @@ export const api = axios.create({
 function delay(seconds: number) {
   return (res: any) =>
     new Promise<any>((resolve) =>
-      setTimeout(() => resolve(res), seconds * 1000),
+      setTimeout(
+        () => resolve(res),
+        Math.round(Math.random() * seconds) * 1000,
+      ),
     )
 }
 

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { ArrowRight, Search, X } from 'lucide-react'
-import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 
 import { approveOrder } from '@/api/approve-order'
 import { cancelOrder } from '@/api/cancel-order'
@@ -25,9 +25,22 @@ interface OrderTableRowProps {
 }
 
 export function OrderTableRow({ order }: OrderTableRowProps) {
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
-
   const queryClient = useQueryClient()
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const isDetailsOpen = searchParams.get('open') === order.orderId
+
+  function setIsDetailsOpen(open: boolean) {
+    setSearchParams((previousSearchParams) => {
+      if (open) {
+        previousSearchParams.set('open', order.orderId)
+      } else {
+        previousSearchParams.delete('open')
+      }
+
+      return previousSearchParams
+    })
+  }
 
   const { mutateAsync: cancelOrderMutate, isPending: isPendingCancelOrder } =
     useMutation({
